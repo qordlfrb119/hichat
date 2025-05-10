@@ -4,7 +4,13 @@ const cors = require('cors');
 const OpenAI = require("openai");
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: 'https://start-now-chat.vercel.app/', 
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true 
+}));
+}));
 app.use(bodyParser.json());
 
 console.log("✅ API Key 확인:", process.env.OPENAI_API_KEY);
