@@ -10,7 +10,6 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true 
 }));
-}));
 app.use(bodyParser.json());
 
 console.log("✅ API Key 확인:", process.env.OPENAI_API_KEY);
