@@ -5,7 +5,7 @@ const OpenAI = require("openai");
 
 const app = express();
 app.use(cors({
-  origin: 'https://start-now-chat.vercel.app/', 
+  origin: 'https://start-now-chat.vercel.app', 
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true 
