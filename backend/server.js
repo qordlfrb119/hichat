@@ -7,7 +7,7 @@ const app = express();
 
 // CORS 설정 (Vercel 도메인 허용)
 app.use(cors({
-  origin: 'https://start-now-chat.vercel.app', // 나중에 Vercel 배포 URL로 업데이트
+  origin: 'https://hichat-three.vercel.app', // 나중에 Vercel 배포 URL로 업데이트
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
