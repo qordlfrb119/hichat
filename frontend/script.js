@@ -14,7 +14,7 @@ document.getElementById("chatForm").addEventListener("submit", async (e) => {
   input.value = "";
 
   try {
-    const backendUrl = process.env.BACKEND_URL || "http://localhost:3000"; // 로컬 테스트용 fallback
+    const backendUrl = "https://hichat-ndu5.onrender.com";
     const res = await fetch(`${backendUrl}/chat`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
