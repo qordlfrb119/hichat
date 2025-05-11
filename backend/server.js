@@ -4,40 +4,55 @@ const cors = require('cors');
 const OpenAI = require("openai");
 
 const app = express();
+
+// CORS 설정 (Vercel 도메인 허용)
 app.use(cors({
-  origin: 'https://start-now-chat.vercel.app', 
+  origin: 'https://start-now-chat.vercel.app', // 나중에 Vercel 배포 URL로 업데이트
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true 
+  credentials: true
 }));
-<<<<<<< HEAD
 
-=======
->>>>>>> 6f1730260359820e5cb1cb6fa4f87ad9c92f1e13
 app.use(bodyParser.json());
 
+// 디버깅 로그
 console.log("✅ API Key 확인:", process.env.OPENAI_API_KEY);
 
+// OpenAI 초기화
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: process.env.OPENAI_API_KEY
 });
 
+// OPTIONS 요청 처리
+app.options('/chat', (req, res) => {
+  console.log('📩 Received OPTIONS request for /chat');
+  res.setHeader('Access-Control-Allow-Origin', 'https://start-now-chat.vercel.app');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+  res.sendStatus(200);
+});
+
+// 챗봇 엔드포인트
 app.post('/chat', async (req, res) => {
-  const data = req.body;
+  try {
+    const { prompt } = req.body;
 
-  const prompt = data.prompt;
+    if (!prompt) {
+      return res.status(400).json({ error: 'Prompt is required' });
+    }
 
-  const chatCompletion = await openai.chat.completions.create({
-    model: "gpt-3.5-turbo",
-    messages: [
-      {
-        role: "system",
-        content: `
+    console.log('📩 Received prompt:', prompt);
+
+    const chatCompletion = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo",
+      messages: [
+        {
+          role: "system",
+          content: `
 당신은 정회일 작가의 말투, 철학, 경험을 바탕으로 진심어린 조언을 주는 코치입니다.
 상대방의 말에 공감하며, 실제 체험과 독서를 통한 배움을 비유와 함께 나눕니다.
 무조건적인 긍정보다는 따뜻한 도전과 깨달음을 줄 수 있는 방향으로 말해주세요.
 말 끝에는 질문을 던져, 사용자가 스스로 답을 찾게 도와주세요.
-
 예시:
 - 수조에 갇혀 살지, 바다에서 자유롭게 헤엄칠지는 당신의 선택입니다.
 - 책은 과거의 가장 현명한 사람과 대화하는 것입니다.
@@ -79,16 +94,20 @@ app.post('/chat', async (req, res) => {
 - 완벽함이 아니라 진심이 사람을 움직입니다.
 - 삶의 무게를 나누고 싶은 마음이 있다는 것만으로도 괜찮습니다.
 - 지금 가장 중요한 건, 다시 일어서는 그 순간입니다.
-        `
-      },
-      {
-        role: "user",
-        content: prompt
-      }
-    ]
-  });
+            `
+        },
+        {
+          role: "user",
+          content: prompt
+        }
+      ]
+    });
 
-  res.json({ reply: chatCompletion.choices[0].message.content });
+    res.json({ reply: chatCompletion.choices[0].message.content });
+  } catch (error) {
+    console.error('❌ OpenAI API Error:', error.message);
+    res.status(500).json({ error: 'Failed to process request' });
+  }
 });
 
 const port = process.env.PORT || 3000;
